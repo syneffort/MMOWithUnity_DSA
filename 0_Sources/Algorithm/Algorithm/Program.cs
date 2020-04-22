@@ -10,6 +10,8 @@ namespace Algorithm
 
             while (true)
             {
+                // FPS 프레임 (60프레임 OK, 30프레임 이하 NG)
+
                 // 입력
 
                 // 로직
