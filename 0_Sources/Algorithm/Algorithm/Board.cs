@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Algorithm.Temp;
 
@@ -8,42 +9,63 @@ namespace Algorithm
 {
     class Board
     {
-        public int[] _data = new int[25]; // 배열
-        //public List<int> _data2 = new List<int>(); // 동적 배열
-        public MyList<int> _data2 = new MyList<int>(); // 동적 배열 (자작)
-        //public LinkedList<int> _data3 = new LinkedList<int>(); // 이중 연결 동적 배열
-        public MyLinkedList<int> _data3 = new MyLinkedList<int>(); // 이중 연결 동적 배열 (자작)
-
-        public void Initialize()
+        #region Tile Type Enum
+        public enum TileType
         {
-            #region List
+            Empty = 0,
+            Wall,
+        }
+        #endregion
 
-            //_data2.Add(101);
-            //_data2.Add(102);
-            //_data2.Add(103);
-            //_data2.Add(104);
-            //_data2.Add(105);
+        public int _size;
+        public TileType[,] _tile;
+        const char CIRCLE = '\u25cf';
 
-            //int temp = _data2[2];
+        public void Initialize(int size)
+        {
+            _size = size;
+            _tile = new TileType[_size, _size];
 
-            //_data2.RemoveAt(2);
-
-            #endregion
-
-            #region LinkedList
-
-            _data3.AddLast(101);
-            _data3.AddLast(102);
-            MyLinkedListNode<int> node = _data3.AddLast(103);
-            _data3.AddLast(104);
-            _data3.AddLast(105);
-
-            _data3.Remove(node);
-
-            #endregion
-
-
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    if (x == 0 || x == _size - 1 || y == 0 || y == size - 1)
+                        _tile[y, x] = TileType.Wall;
+                    else
+                        _tile[y, x] = TileType.Empty;
+                }
+            }
         }
 
+        public void Render()
+        {
+            ConsoleColor prevColor = Console.ForegroundColor;
+
+            for (int y = 0; y < _size; y++)
+            {
+                for (int x = 0; x < _size; x++)
+                {
+                    Console.ForegroundColor = GetTileColor(_tile[x, y]);
+                    Console.Write(CIRCLE);
+                }
+                Console.WriteLine();
+            }
+
+            Console.ForegroundColor = prevColor;
+        }
+
+        ConsoleColor GetTileColor(TileType type)
+        {
+            switch (type)
+            {
+                case TileType.Empty:
+                    return ConsoleColor.Green;
+                case TileType.Wall:
+                    return ConsoleColor.Gray;
+                default:
+                    return ConsoleColor.Green;
+            }
+        }
     }
 }
