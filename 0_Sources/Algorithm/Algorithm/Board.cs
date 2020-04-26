@@ -21,6 +21,9 @@ namespace Algorithm
         public TileType[,] Tile { get; private set; }
         const char CIRCLE = '\u25cf';
 
+        public int DestY { get; private set; }
+        public int DestX { get; private set; }
+
         Player _player;
 
         public void Initialize(int size, Player player)
@@ -32,6 +35,9 @@ namespace Algorithm
 
             Size = size;
             Tile = new TileType[Size, Size];
+
+            DestY = Size - 2;
+            DestX = Size - 2;
 
             //GenerateByBinaryTree();
             GenerateBySideWinder();
@@ -153,6 +159,8 @@ namespace Algorithm
                     // 플레이어 좌표와 비교해서 플레이어 출력
                     if (y == _player.PosX && x == _player.PosY)
                         Console.ForegroundColor = ConsoleColor.Blue;
+                    else if (y == DestY && x == DestX)
+                        Console.ForegroundColor = ConsoleColor.Green;
                     else
                         Console.ForegroundColor = GetTileColor(Tile[x, y]);
                     
@@ -171,7 +179,7 @@ namespace Algorithm
                 case TileType.Empty:
                     return ConsoleColor.Black;
                 case TileType.Wall:
-                    return ConsoleColor.Red;
+                    return ConsoleColor.Gray;
                 default:
                     return ConsoleColor.Black;
             }

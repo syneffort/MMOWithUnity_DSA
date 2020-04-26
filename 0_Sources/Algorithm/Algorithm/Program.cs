@@ -8,8 +8,8 @@ namespace Algorithm
         {
             Board board = new Board();
             Player player = new Player();
-            board.Initialize(11, player);
-            player.Initialize(1, 1, board.Size -2, board.Size - 2, board);
+            board.Initialize(25, player);
+            player.Initialize(1, 1, board);
 
             Console.CursorVisible = false;
 
