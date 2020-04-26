@@ -7,7 +7,9 @@ namespace Algorithm
         static void Main(string[] args)
         {
             Board board = new Board();
-            board.Initialize(25);
+            Player player = new Player();
+            board.Initialize(11, player);
+            player.Initialize(1, 1, board.Size -2, board.Size - 2, board);
 
             Console.CursorVisible = false;
 
@@ -19,8 +21,8 @@ namespace Algorithm
                 #region 프레임 관리
                 // FPS 프레임 (60프레임 OK, 30프레임 이하 NG)
                 int currentTick = System.Environment.TickCount;
-
-                if (currentTick - lastTick < WAIT_TICK)
+                int deltaTick = currentTick - lastTick;
+                if (deltaTick < WAIT_TICK)
                     continue;
 
                 lastTick = currentTick;
@@ -29,6 +31,7 @@ namespace Algorithm
                 // 입력
 
                 // 로직
+                player.Update(deltaTick);
 
                 // 렌더링
                 Console.SetCursorPosition(0, 0);

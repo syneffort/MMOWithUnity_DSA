@@ -17,17 +17,21 @@ namespace Algorithm
         }
         #endregion
 
-        public int _size;
-        public TileType[,] _tile;
+        public int Size { get; private set; }
+        public TileType[,] Tile { get; private set; }
         const char CIRCLE = '\u25cf';
 
-        public void Initialize(int size)
+        Player _player;
+
+        public void Initialize(int size, Player player)
         {
             if (size % 2 == 0)
                 return;
 
-            _size = size;
-            _tile = new TileType[_size, _size];
+            _player = player;
+
+            Size = size;
+            Tile = new TileType[Size, Size];
 
             //GenerateByBinaryTree();
             GenerateBySideWinder();
@@ -37,49 +41,49 @@ namespace Algorithm
         {
 
             // 길을 막는 작업
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < Size; y++)
             {
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < Size; x++)
                 {
                     if (x % 2 == 0 || y % 2 == 0)
-                        _tile[y, x] = TileType.Wall;
+                        Tile[y, x] = TileType.Wall;
                     else
-                        _tile[y, x] = TileType.Empty;
+                        Tile[y, x] = TileType.Empty;
                 }
             }
 
             // 랜덤으로 우측 혹은 아래로 길을 열어주는 작업
             // 바이너리 트리 알고리즘
             Random rand = new Random();
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < Size; y++)
             {
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < Size; x++)
                 {
                     if (x % 2 == 0 || y % 2 == 0)
                         continue;
 
-                    if (y == _size - 2 && x == _size - 2)
+                    if (y == Size - 2 && x == Size - 2)
                         continue;
 
-                    if (y == _size - 2)
+                    if (y == Size - 2)
                     {
-                        _tile[y, x + 1] = TileType.Empty;
+                        Tile[y, x + 1] = TileType.Empty;
                         continue;
                     }
 
-                    if (x == _size - 2)
+                    if (x == Size - 2)
                     {
-                        _tile[y + 1, x] = TileType.Empty;
+                        Tile[y + 1, x] = TileType.Empty;
                         continue;
                     }
 
                     if (rand.Next(0, 2) == 0)
                     {
-                        _tile[y, x + 1] = TileType.Empty;
+                        Tile[y, x + 1] = TileType.Empty;
                     }
                     else
                     {
-                        _tile[y + 1, x] = TileType.Empty;
+                        Tile[y + 1, x] = TileType.Empty;
                     }
 
                 }
@@ -88,50 +92,50 @@ namespace Algorithm
 
         void GenerateBySideWinder()
         {
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < Size; y++)
             {
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < Size; x++)
                 {
                     if (x % 2 == 0 || y % 2 == 0)
-                        _tile[y, x] = TileType.Wall;
+                        Tile[y, x] = TileType.Wall;
                     else
-                        _tile[y, x] = TileType.Empty;
+                        Tile[y, x] = TileType.Empty;
                 }
             }
 
             Random rand = new Random();
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < Size; y++)
             {
                 int count = 1;
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < Size; x++)
                 {
                     if (x % 2 == 0 || y % 2 == 0)
                         continue;
 
-                    if (y == _size - 2 && x == _size - 2)
+                    if (y == Size - 2 && x == Size - 2)
                         continue;
 
-                    if (y == _size - 2)
+                    if (y == Size - 2)
                     {
-                        _tile[y, x + 1] = TileType.Empty;
+                        Tile[y, x + 1] = TileType.Empty;
                         continue;
                     }
 
-                    if (x == _size - 2)
+                    if (x == Size - 2)
                     {
-                        _tile[y + 1, x] = TileType.Empty;
+                        Tile[y + 1, x] = TileType.Empty;
                         continue;
                     }
 
                     if (rand.Next(0, 2) == 0)
                     {
-                        _tile[y, x + 1] = TileType.Empty;
+                        Tile[y, x + 1] = TileType.Empty;
                         count++;
                     }
                     else
                     {
                         int randomIndex = rand.Next(0, count);
-                        _tile[y + 1, x - randomIndex * 2] = TileType.Empty;
+                        Tile[y + 1, x - randomIndex * 2] = TileType.Empty;
                         count = 1;
                     }
                 }
@@ -142,11 +146,16 @@ namespace Algorithm
         {
             ConsoleColor prevColor = Console.ForegroundColor;
 
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < Size; y++)
             {
-                for (int x = 0; x < _size; x++)
+                for (int x = 0; x < Size; x++)
                 {
-                    Console.ForegroundColor = GetTileColor(_tile[x, y]);
+                    // 플레이어 좌표와 비교해서 플레이어 출력
+                    if (y == _player.PosX && x == _player.PosY)
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                    else
+                        Console.ForegroundColor = GetTileColor(Tile[x, y]);
+                    
                     Console.Write(CIRCLE);
                 }
                 Console.WriteLine();
