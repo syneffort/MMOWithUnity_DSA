@@ -9,12 +9,12 @@ namespace Exercise
         {
             int[,] adj = new int[6, 6]
             {
-                { 0, 1, 0, 1, 0, 0 },
-                { 1, 0, 1, 1, 0, 0 },
-                { 0, 1, 0, 0, 0, 0 },
-                { 1, 1, 0, 0, 1, 0 },
-                { 0, 0, 0, 1, 0, 1 },
-                { 0, 0, 0, 0, 1, 0 },
+                { -1, 15, -1, 35, -1, -1 },
+                { 15, -1, 05, 10, -1, -1 },
+                { -1, 05, -1, -1, -1, -1 },
+                { 35, 10, -1, -1, 05, -1 },
+                { -1, -1, -1, 05, -1, 05 },
+                { -1, -1, -1, -1, 05, -1 },
             };
 
             List<int>[] adj2 = new List<int>[]
@@ -73,6 +73,7 @@ namespace Exercise
             }
             #endregion
 
+            #region BFS
             public void BFS(int start)
             {
                 bool[] found = new bool[6];
@@ -103,6 +104,64 @@ namespace Exercise
                         found[next] = true;
                         parent[next] = now;
                         distance[next] = distance[now] + 1;
+                    }
+                }
+            }
+            #endregion
+
+            public void Dijikstra(int start)
+            {
+                bool[] visited = new bool[6];
+                int[] distance = new int[6];
+                int[] parent = new int[6];
+                Array.Fill(distance, int.MaxValue);
+
+                distance[start] = 0;
+                parent[start] = start;
+                while (true)
+                {
+                    // 가장 좋은(가까운) 후보 선정
+                    int closest = int.MaxValue;
+                    int now = -1;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        // 기존 방문한 버텍스 컨티뉴
+                        if (visited[i])
+                            continue;
+                        
+                        // 아직 발견(예약)되지 않거나, 기존 후보보다 멀다면 컨티뉴
+                        if (distance[i] == int.MaxValue || distance[i] >= closest)
+                            continue;
+
+                        closest = distance[i];
+                        now = i;
+                    }
+
+                    // 다음 후보가 없으면 종료
+                    if (now == -1)
+                        break;
+
+                    // 가장 좋은 후보 방문
+                    visited[now] = true;
+
+                    // 후보와 인접한 버텍스 조사 후 최단거리 갱신
+                    for (int next = 0; next < 6; next++)
+                    {
+                        // 연결되지 않은 버텍스 컨티뉴
+                        if (adj[now, next] == -1)
+                            continue;
+
+                        // 이미 방문한 버텍스 컨티뉴
+                        if (visited[next])
+                            continue;
+
+                        // 새로 발견된 버텍스 까지의 거리 계산 후 갱신
+                        int nextDist = distance[now] + adj[now, next];
+                        if (nextDist < distance[next])
+                        {
+                            distance[next] = nextDist;
+                            parent[next] = now;
+                        }
                     }
                 }
             }
@@ -159,7 +218,7 @@ namespace Exercise
 
             Graph graph = new Graph();
             //graph.SearchAll();
-            graph.BFS(0);
+            graph.Dijikstra(0);
         }
     }
 }
