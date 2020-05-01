@@ -12,8 +12,8 @@ namespace Exercise
                 { 0, 1, 0, 1, 0, 0 },
                 { 1, 0, 1, 1, 0, 0 },
                 { 0, 1, 0, 0, 0, 0 },
-                { 1, 1, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 1 },
+                { 1, 1, 0, 0, 1, 0 },
+                { 0, 0, 0, 1, 0, 1 },
                 { 0, 0, 0, 0, 1, 0 },
             };
 
@@ -22,11 +22,12 @@ namespace Exercise
                 new List<int>() { 1, 3 },
                 new List<int>() { 0, 2, 3},
                 new List<int>() { 1 },
-                new List<int>() { 0, 1 },
-                new List<int>() { 5 },
+                new List<int>() { 0, 1, 4 },
+                new List<int>() { 3, 5 },
                 new List<int>() { 4, },
             };
 
+            #region DFS
             bool[] visited = new bool[6];
             // 1) now 방문함
             // 2) now와 연결된 버텍스들을 하나씩 확인해서 아직 미방문 상태라면 방문함
@@ -68,6 +69,41 @@ namespace Exercise
                 {
                     if (visited[now] == false)
                         DFS(now);
+                }
+            }
+            #endregion
+
+            public void BFS(int start)
+            {
+                bool[] found = new bool[6];
+                int[] parent = new int[6];
+                int[] distance = new int[6];
+
+                Queue<int> q = new Queue<int>();
+                q.Enqueue(start);
+                found[start] = true;
+                parent[start] = start;
+                distance[start] = 0;
+
+                while (q.Count > 0)
+                {
+                    int now = q.Dequeue();
+                    Console.WriteLine(now);
+
+                    for (int next = 0; next < 6; next++)
+                    {
+                        if (adj[now, next] == 0)
+                            continue;
+
+
+                        if (found[next])
+                            continue;
+
+                        q.Enqueue(next);
+                        found[next] = true;
+                        parent[next] = now;
+                        distance[next] = distance[now] + 1;
+                    }
                 }
             }
         }
@@ -122,7 +158,8 @@ namespace Exercise
             // BFS (Breadth First Search : 너비 우선 탐색)
 
             Graph graph = new Graph();
-            graph.SearchAll();
+            //graph.SearchAll();
+            graph.BFS(0);
         }
     }
 }
