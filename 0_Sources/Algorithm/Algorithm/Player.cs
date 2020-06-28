@@ -275,6 +275,12 @@ namespace Algorithm
             PosX = _points[_lastIndex].X;
             _lastIndex++;
 
+            // 애니메이션 갱신
+
+            // 스킬 쿨타임 체크
+
+            // 물리 적용 (중력 등)
+
             #region Random Move Test
             //int randValue = _rand.Next(0, 5);
             //switch (randValue)
